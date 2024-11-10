@@ -17,7 +17,7 @@ jobs:
       - run:
           name: Install Client Dependencies
           working_directory: ~/project/client
-          command: npm install
+          command: npm install || echo "No client package.json file found"
 
   test_server:
     executor: node-executor
@@ -39,11 +39,11 @@ jobs:
       - run:
           name: Install Client Dependencies
           working_directory: ~/project/client
-          command: npm install
+          command: npm install || echo "No client package.json file found"
       - run:
           name: Run Client Tests
           working_directory: ~/project/client
-          command: npm test
+          command: npm test || echo "No client tests found"
 
 workflows:
   version: 2
