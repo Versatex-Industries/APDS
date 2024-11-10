@@ -58,6 +58,21 @@ jobs:
           working_directory: ~/project/client
           command: npm test || echo "No client tests found"
 
+  sonar_scan:
+    docker:
+      - image: sonarsource/sonar-scanner-cli:latest
+    steps:
+      - checkout
+      - run:
+          name: Run SonarQube Analysis
+          command: |
+            sonar-scanner \
+              -Dsonar.projectKey=APDS-POE \
+              -Dsonar.sources=./server,./client \
+              -Dsonar.host.url=$SONAR_HOST_URL \
+              -Dsonar.login=$SONAR_TOKEN \
+              -Dsonar.exclusions=**/node_modules/**,**/*.test.js,**/__tests__/**
+
 workflows:
   version: 2
   test_pipeline:
@@ -67,5 +82,8 @@ workflows:
           requires:
             - install_dependencies
       - test_client:
+          requires:
+            - install_dependencies
+      - sonar_scan:
           requires:
             - install_dependencies
