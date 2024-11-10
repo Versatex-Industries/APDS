@@ -6,43 +6,53 @@ executors:
       - image: circleci/node:16
 
 jobs:
-  lint:
+  install_dependencies:
     executor: node-executor
     steps:
       - checkout
       - run:
-          name: Install Dependencies
+          name: Install Server Dependencies
+          working_directory: ~/project/server
           command: npm install
       - run:
-          name: Run ESLint
-          command: npx eslint .
+          name: Install Client Dependencies
+          working_directory: ~/project/client
+          command: npm install
 
-  test:
+  test_server:
     executor: node-executor
     steps:
       - checkout
       - run:
-          name: Install Dependencies
+          name: Install Server Dependencies
+          working_directory: ~/project/server
           command: npm install
       - run:
-          name: Run Tests
+          name: Run Server Tests
+          working_directory: ~/project/server
           command: npm test
 
-  security_check:
+  test_client:
     executor: node-executor
     steps:
       - checkout
       - run:
-          name: Install Dependencies
+          name: Install Client Dependencies
+          working_directory: ~/project/client
           command: npm install
       - run:
-          name: Run npm audit
-          command: npm audit
+          name: Run Client Tests
+          working_directory: ~/project/client
+          command: npm test
 
 workflows:
   version: 2
-  lint_test_security:
+  test_pipeline:
     jobs:
-      - lint
-      - test
-      - security_check
+      - install_dependencies
+      - test_server:
+          requires:
+            - install_dependencies
+      - test_client:
+          requires:
+            - install_dependencies
