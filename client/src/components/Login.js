@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from '../api';
+import { login } from '../authApi';
 
 function Login({ setToken }) {
     const [username, setUsername] = useState('');
@@ -7,8 +7,8 @@ function Login({ setToken }) {
 
     const handleLogin = async () => {
         try {
-            const response = await api.post('/login', { username, password });
-            setToken(response.data.token);
+            const response = await login(username, password);
+            setToken(response.token);
             alert('Login successful');
         } catch (error) {
             alert('Login failed');

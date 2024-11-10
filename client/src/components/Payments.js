@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api';
 import './Payments.css';
 
-function Payments({ token }) {
+function Payments({ token, onSubmit }) {
     const [amount, setAmount] = useState('');
     const [currency, setCurrency] = useState('');
     const [recipient, setRecipient] = useState('');
@@ -31,6 +31,7 @@ function Payments({ token }) {
             setAmount('');
             setCurrency('');
             setRecipient('');
+
             // Refresh payments
             const response = await api.get('/payments', {
                 headers: { Authorization: `Bearer ${token}` }
@@ -41,14 +42,38 @@ function Payments({ token }) {
         }
     };
 
+    const submitPayment = () => {
+        // Use provided onSubmit for testing, or fallback to handlePayment
+        if (onSubmit) {
+            onSubmit({ amount, currency, recipient });
+        } else {
+            handlePayment();
+        }
+    };
+
     return (
         <div className="payments-container">
             <div className="payment-form">
                 <h2>Make a Payment</h2>
-                <input type="number" placeholder="Amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
-                <input type="text" placeholder="Currency" value={currency} onChange={(e) => setCurrency(e.target.value)} />
-                <input type="text" placeholder="Recipient" value={recipient} onChange={(e) => setRecipient(e.target.value)} />
-                <button onClick={handlePayment}>Submit Payment</button>
+                <input
+                    type="number"
+                    placeholder="Amount"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder="Currency"
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder="Recipient"
+                    value={recipient}
+                    onChange={(e) => setRecipient(e.target.value)}
+                />
+                <button onClick={submitPayment}>Submit Payment</button>
             </div>
             <div className="payments-history">
                 <h2>Payment History</h2>

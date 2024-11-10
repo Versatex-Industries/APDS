@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from '../api';
+import { register } from '../authApi';
 
 function Register() {
     const [username, setUsername] = useState('');
@@ -13,7 +13,7 @@ function Register() {
             return alert('Invalid input');
         }
         try {
-            await api.post('/register', { username, password });
+            await register(username, password);
             alert('Registration successful');
         } catch (error) {
             alert(error.response?.data?.message || 'Registration failed');
