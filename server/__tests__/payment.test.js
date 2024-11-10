@@ -34,6 +34,7 @@ describe('Payment API', () => {
                 currency: 'USD',
                 recipient: 'recipient@example.com',
             });
+        console.log('Response:', res.statusCode, res.body);
         expect(res.statusCode).toEqual(201);
         expect(res.body.message).toBe('Payment processed successfully');
     });
