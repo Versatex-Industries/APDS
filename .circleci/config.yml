@@ -70,7 +70,7 @@ jobs:
           name: Run SonarQube Analysis
           command: |
             sonar-scanner \
-              -Dsonar.projectKey=APDS-POE \
+              -Dsonar.projectKey=Versatex-Industries_APDS \
               -Dsonar.organization=Versatex-Industries \
               -Dsonar.sources=./server,./client \
               -Dsonar.host.url=https://sonarcloud.io \
