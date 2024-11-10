@@ -4,9 +4,9 @@ executors:
   node-executor:
     docker:
       - image: circleci/node:16
-      - image: mongo:4.4
-        name: mongo
-        command: [--bind_ip_all]  # Ensure MongoDB is accessible within the CircleCI environment
+      - image: circleci/mongo:4.2.8
+        environment:
+          MONGO_INITDB_DATABASE: paymentsDB
 
 jobs:
   install_dependencies:
@@ -24,6 +24,8 @@ jobs:
 
   test_server:
     executor: node-executor
+    environment:
+      DB_URI: mongodb://localhost:27017/paymentsDB
     steps:
       - checkout
       - run:
@@ -31,11 +33,17 @@ jobs:
           working_directory: ~/project/server
           command: npm install
       - run:
+          name: Wait for MongoDB
+          command: |
+            for i in $(seq 1 10); do
+              nc -z localhost 27017 && echo "MongoDB is ready" && break
+              echo "Waiting for MongoDB to be ready..."
+              sleep 3
+            done
+      - run:
           name: Run Server Tests
           working_directory: ~/project/server
-          environment:
-            DB_URI: mongodb://localhost:27017/paymentsDB  # Use MongoDB URI for testing
-          command: npm test
+          command: npm test -- --detectOpenHandles
 
   test_client:
     executor: node-executor

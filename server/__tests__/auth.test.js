@@ -4,6 +4,7 @@ const app = require('../index');
 const User = require('../models/User');
 
 beforeAll(async () => {
+    jest.setTimeout(30000);
     await mongoose.connect(process.env.DB_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
