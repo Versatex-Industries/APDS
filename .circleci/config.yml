@@ -12,11 +12,11 @@ jobs:
       - checkout
       - run:
           name: Install Server Dependencies
-          working_directory: ~/server
+          working_directory: ~/project/server
           command: npm install
       - run:
           name: Install Client Dependencies
-          working_directory: ~/client
+          working_directory: ~/project/client
           command: npm install
 
   test_server:
@@ -25,11 +25,11 @@ jobs:
       - checkout
       - run:
           name: Install Server Dependencies
-          working_directory: ~/server
+          working_directory: ~/project/server
           command: npm install
       - run:
           name: Run Server Tests
-          working_directory: ~/server
+          working_directory: ~/project/server
           command: npm test
 
   test_client:
@@ -38,11 +38,11 @@ jobs:
       - checkout
       - run:
           name: Install Client Dependencies
-          working_directory: ~/client
+          working_directory: ~/project/client
           command: npm install
       - run:
           name: Run Client Tests
-          working_directory: ~/client
+          working_directory: ~/project/client
           command: npm test
 
 workflows:
