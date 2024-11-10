@@ -64,6 +64,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Load Environment Variables
+          command: source .env || echo "No .env file found"
+      - run:
           name: Run SonarQube Analysis
           command: |
             sonar-scanner \
