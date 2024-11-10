@@ -71,6 +71,7 @@ jobs:
           command: |
             sonar-scanner \
               -Dsonar.projectKey=APDS-POE \
+              -Dsonar.organization=Versatex-Industries \
               -Dsonar.sources=./server,./client \
               -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=080954d5b147c561f538459ce3cfd55b7150d8a4 \
