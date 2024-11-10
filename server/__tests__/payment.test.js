@@ -1,6 +1,7 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../index');
+const User = require('../models/User');
 
 let token;
 
@@ -11,13 +12,24 @@ beforeAll(async () => {
         serverSelectionTimeoutMS: 5000,
         heartbeatFrequencyMS: 5000,
     });
+
+    // Register a test user (if not already exists) and log in to get a valid token
+    await User.deleteOne({ username: 'testuser' }); // Ensure no duplicate user
+
+    await request(app)
+        .post('/register')
+        .send({
+            username: 'testuser',
+            password: 'Test1234',
+        });
+
     const res = await request(app)
         .post('/login')
         .send({
             username: 'testuser',
             password: 'Test1234',
         });
-    token = res.body.token;
+    token = res.body.token; // Store token for later use in tests
 });
 
 afterAll(async () => {
