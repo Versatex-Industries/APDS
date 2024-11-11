@@ -7,24 +7,31 @@ function Payments({ token, onSubmit }) {
     const [currency, setCurrency] = useState('');
     const [recipient, setRecipient] = useState('');
     const [payments, setPayments] = useState([]);
+    const username = localStorage.getItem('username');
+    const role = localStorage.getItem('role'); // Retrieve role to determine if user is an employee
 
     useEffect(() => {
         const fetchPayments = async () => {
             try {
-                const response = await api.get('/payments', {
+                const endpoint = role === 'employee' ? '/payments' : `/payments/${username}`;
+
+                const response = await api.get(endpoint, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
+
                 setPayments(response.data);
             } catch (error) {
                 console.error('Error fetching payments:', error);
             }
         };
         fetchPayments();
-    }, [token]);
+    }, [token, username, role]);
 
     const handlePayment = async () => {
+        const sender = username || 'unknown sender';
+
         try {
-            await api.post('/payment', { amount, currency, recipient }, {
+            await api.post('/payment', { amount, currency, sender, recipient }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             alert('Payment successful');
@@ -32,10 +39,12 @@ function Payments({ token, onSubmit }) {
             setCurrency('');
             setRecipient('');
 
-            // Refresh payments
-            const response = await api.get('/payments', {
+            // Refresh payments after successful payment
+            const endpoint = role === 'employee' ? '/payments' : `/payments/${username}`;
+            const response = await api.get(endpoint, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+
             setPayments(response.data);
         } catch (error) {
             alert(error.response?.data?.message || 'Payment failed');
@@ -43,7 +52,6 @@ function Payments({ token, onSubmit }) {
     };
 
     const submitPayment = () => {
-        // Use provided onSubmit for testing, or fallback to handlePayment
         if (onSubmit) {
             onSubmit({ amount, currency, recipient });
         } else {
@@ -76,17 +84,17 @@ function Payments({ token, onSubmit }) {
                 <button onClick={submitPayment}>Submit Payment</button>
             </div>
             <div className="payments-history">
-                <h2>Payment History</h2>
+                <h2>{role === 'employee' ? 'All Payments' : 'Your Payments'}</h2>
                 {payments.length ? (
                     <ul>
                         {payments.map((payment) => (
                             <li key={payment._id}>
-                                <span>{payment.amount} {payment.currency}</span> to <span>{payment.recipient}</span> on <span>{new Date(payment.createdAt).toLocaleString()}</span>
+                                <span>{payment.amount} {payment.currency} from {payment.sender} to {payment.recipient} on {new Date(payment.createdAt).toLocaleString()}</span>
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    <p>No previous payments.</p>
+                    <p>No payments available.</p>
                 )}
             </div>
         </div>
