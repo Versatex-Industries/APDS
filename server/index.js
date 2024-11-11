@@ -23,6 +23,15 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 // Connect to MongoDB
 mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
+// Middleware to check if the user is an employee
+function employeeOnly(req, res, next) {
+  if (req.user && req.user.role === 'employee') {
+    next(); // User is an employee, allow access
+  } else {
+    res.status(403).json({ message: 'Access denied' }); // Deny access to non-employee users
+  }
+}
+
 // Register User
 app.post('/register', async (req, res, next) => {
   const { username, password } = req.body;
@@ -96,21 +105,24 @@ app.get('/payments/:username', async (req, res) => {
 });
 
 // Get payment history
-app.get('/payments', async (req, res) => {
+app.get('/payments', employeeOnly, async (req, res) => {
   try {
-    // Find payments where the user is either the sender or the receiver
+    // Fetch all payments (only accessible by employees due to middleware)
     const payments = await Payment.find({});
 
     if (payments.length === 0) {
-      return res.status(404).json({ message: 'No payments found for this user' });
+      // Return an empty array if no payments exist, with a 200 status code to indicate a successful request
+      return res.status(200).json({ message: 'No payments found', payments: [] });
     }
+
     // Respond with the list of payments
-    res.json(payments);
+    res.status(200).json(payments);
   } catch (error) {
-    console.error(`Error fetching payments for`, error);
+    console.error(`Error fetching payments:`, error);
     res.status(500).json({ message: 'Failed to fetch payments', error: error.message });
   }
 });
+
 
 app.post('/employee-login', async (req, res) => {
   const { username, password } = req.body;
