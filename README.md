@@ -1,7 +1,6 @@
 # APDS Project
 
 ![CircleCI](https://circleci.com/gh/Versatex-Industries/APDS.svg?style=shield)
-[![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=Versatex-Industries_APDS&metric=alert_status)](https://sonarcloud.io/dashboard?id=Versatex-Industries_APDS)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Versatex-Industries_APDS&metric=code_smells)](https://sonarcloud.io/dashboard?id=Versatex-Industries_APDS)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Versatex-Industries_APDS&metric=coverage)](https://sonarcloud.io/dashboard?id=Versatex-Industries_APDS)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Versatex-Industries_APDS&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=Versatex-Industries_APDS)
