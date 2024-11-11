@@ -14,7 +14,7 @@ function Auth({ setToken }) {
     const handleAuth = async () => {
         try {
 
-          /*  if(!validateUsername(username)) {
+            if(!validateUsername(username)) {
                 alert('Please enter a valid username');
                 return;
             }
@@ -22,7 +22,7 @@ function Auth({ setToken }) {
             if(!validatePassword(password)) {
                 alert('Please enter a valid password');
                 return;
-            }*/
+            }
 
             const endpoint = isEmployeeLogin ? '/employee-login' : (isLogin ? '/login' : '/register')
             const payload = { username, password };
